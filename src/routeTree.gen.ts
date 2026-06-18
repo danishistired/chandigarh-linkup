@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as RedirectRouteImport } from './routes/redirect'
 import { Route as RandomRouteImport } from './routes/random'
 import { Route as MembersRouteImport } from './routes/members'
+import { Route as InfoRouteImport } from './routes/info'
 import { Route as IndexRouteImport } from './routes/index'
 
 const RedirectRoute = RedirectRouteImport.update({
@@ -29,6 +30,11 @@ const MembersRoute = MembersRouteImport.update({
   path: '/members',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InfoRoute = InfoRouteImport.update({
+  id: '/info',
+  path: '/info',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,12 +43,14 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/info': typeof InfoRoute
   '/members': typeof MembersRoute
   '/random': typeof RandomRoute
   '/redirect': typeof RedirectRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/info': typeof InfoRoute
   '/members': typeof MembersRoute
   '/random': typeof RandomRoute
   '/redirect': typeof RedirectRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/info': typeof InfoRoute
   '/members': typeof MembersRoute
   '/random': typeof RandomRoute
   '/redirect': typeof RedirectRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/members' | '/random' | '/redirect'
+  fullPaths: '/' | '/info' | '/members' | '/random' | '/redirect'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/members' | '/random' | '/redirect'
-  id: '__root__' | '/' | '/members' | '/random' | '/redirect'
+  to: '/' | '/info' | '/members' | '/random' | '/redirect'
+  id: '__root__' | '/' | '/info' | '/members' | '/random' | '/redirect'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  InfoRoute: typeof InfoRoute
   MembersRoute: typeof MembersRoute
   RandomRoute: typeof RandomRoute
   RedirectRoute: typeof RedirectRoute
@@ -92,6 +102,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MembersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/info': {
+      id: '/info'
+      path: '/info'
+      fullPath: '/info'
+      preLoaderRoute: typeof InfoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  InfoRoute: InfoRoute,
   MembersRoute: MembersRoute,
   RandomRoute: RandomRoute,
   RedirectRoute: RedirectRoute,
