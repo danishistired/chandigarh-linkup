@@ -1,3 +1,9 @@
 {
-  "members": []
+  "members": [
+    {
+      "name": "radish",
+      "gh": "danishistired",
+      "url": "https://danishv.me"
+    }
+  ]
 }
