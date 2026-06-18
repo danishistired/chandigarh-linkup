@@ -175,7 +175,26 @@ function Home() {
         )}
       </section>
 
+      {/* wire up */}
+      <section className="mt-12">
+        <h2 className="text-2xl font-bold">// wire up your site</h2>
+        <p className="mt-2 text-sm">drop this anywhere on your page and replace <code>your-handle</code> with your exact name from the ring:</p>
+        <pre className="mt-3 border border-foreground p-4 text-xs md:text-sm overflow-x-auto bg-muted">
+{`<a href="/redirect?from=your-handle&dir=prev">← prev</a>
+<a href="/random">random</a>
+<a href="/redirect?from=your-handle&dir=next">next →</a>`}
+        </pre>
+        <p className="mt-3 text-xs text-muted-foreground">
+          prefix the hrefs with this site's base URL once it's deployed. full docs live on{" "}
+          <Link to="/info" className="underline decoration-accent hover:text-foreground">
+            /info
+          </Link>
+          .
+        </p>
+      </section>
+
       {/* footer */}
+
       <footer className="mt-16 pt-6 border-t border-foreground space-y-2 text-xs text-muted-foreground uppercase tracking-widest">
         <div className="flex flex-wrap gap-x-6 gap-y-1">
           <span>
