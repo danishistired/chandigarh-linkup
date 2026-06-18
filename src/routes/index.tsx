@@ -39,11 +39,11 @@ function ThemeToggle() {
         document.documentElement.classList.contains("dark") ? "dark" : "light",
       );
     };
-    // user-provided snippet:
-    // @ts-expect-error - view transitions API not in lib.dom yet for all envs
-    if (!document.startViewTransition) apply();
-    // @ts-expect-error
-    else document.startViewTransition(apply);
+    const doc = document as Document & {
+      startViewTransition?: (cb: () => void) => unknown;
+    };
+    if (!doc.startViewTransition) apply();
+    else doc.startViewTransition(apply);
   }
 
   if (!mounted) return <button className="opacity-0">.</button>;
