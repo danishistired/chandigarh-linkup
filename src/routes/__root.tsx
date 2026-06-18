@@ -77,19 +77,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "adda — a webring for chandigarh university" },
+      {
+        name: "description",
+        content:
+          "a dead-simple webring for students, hackers and tinkerers from Chandigarh University.",
+      },
+      { name: "author", content: "adda" },
+      { property: "og:title", content: "adda — a CU webring" },
+      {
+        property: "og:description",
+        content: "a dead-simple webring for students, hackers and tinkerers from Chandigarh University.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
       {
         rel: "stylesheet",
-        href: appCss,
+        href: "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap",
       },
     ],
   }),

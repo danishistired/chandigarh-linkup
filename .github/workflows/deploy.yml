@@ -1,0 +1,44 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# adjust this workflow to your host (cloudflare pages, vercel, netlify, etc).
+# the build command and output directory below assume the default
+# TanStack Start + Nitro Cloudflare target this template ships with.
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run build
+      # === pick ONE of the deploy steps below and delete the rest ===
+
+      # --- Cloudflare Pages (recommended for this template) ---
+      # - name: deploy to cloudflare pages
+      #   uses: cloudflare/wrangler-action@v3
+      #   with:
+      #     apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      #     accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      #     command: pages deploy .output/public --project-name=adda
+
+      # --- Vercel ---
+      # - uses: amondnet/vercel-action@v25
+      #   with:
+      #     vercel-token: ${{ secrets.VERCEL_TOKEN }}
+      #     vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+      #     vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+      #     vercel-args: "--prod"
+
+      # --- GitHub Pages (static only — server routes won't run) ---
+      # - uses: actions/upload-pages-artifact@v3
+      #   with:
+      #     path: .output/public
+      # - uses: actions/deploy-pages@v4
