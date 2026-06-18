@@ -1,0 +1,50 @@
+name: validate webring.json
+
+on:
+  pull_request:
+    paths:
+      - "webring.json"
+  push:
+    branches: [main]
+    paths:
+      - "webring.json"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: validate schema + uniqueness
+        run: |
+          node -e '
+            const fs = require("fs");
+            const data = JSON.parse(fs.readFileSync("webring.json", "utf8"));
+            if (!data || !Array.isArray(data.members)) {
+              console.error("webring.json must have a top-level members array");
+              process.exit(1);
+            }
+            const seen = new Set();
+            for (const [i, m] of data.members.entries()) {
+              for (const k of ["name", "gh", "url"]) {
+                if (typeof m[k] !== "string" || !m[k].trim()) {
+                  console.error(`entry #${i}: missing/invalid "${k}"`);
+                  process.exit(1);
+                }
+              }
+              if (!/^[a-z0-9-]+$/.test(m.name)) {
+                console.error(`entry #${i} (${m.name}): name must be lowercase a-z, 0-9, -`);
+                process.exit(1);
+              }
+              try { new URL(m.url); } catch {
+                console.error(`entry #${i} (${m.name}): url is not valid`);
+                process.exit(1);
+              }
+              const key = m.name.toLowerCase();
+              if (seen.has(key)) {
+                console.error(`duplicate name: ${m.name}`);
+                process.exit(1);
+              }
+              seen.add(key);
+            }
+            console.log(`ok — ${data.members.length} member(s)`);
+          '
