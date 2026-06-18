@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { members } from "@/lib/webring";
+import { members as ringMembers } from "@/lib/webring";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -14,13 +14,18 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "adda — a CU webring" },
       {
         property: "og:description",
-        content: "a tiny webring for students, hackers and tinkerers from Chandigarh University.",
+        content:
+          "a tiny webring for students, hackers and tinkerers from Chandigarh University.",
       },
       { property: "og:type", content: "website" },
     ],
   }),
   component: Home,
 });
+
+const FOUNDERS = [
+  { name: "radish", gh: "danishistired", url: "https://danishv.me" },
+];
 
 function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
@@ -58,11 +63,45 @@ function ThemeToggle() {
   );
 }
 
+type Person = { name: string; gh: string; url: string };
+
+function PersonCard({ p, index }: { p: Person; index?: number }) {
+  return (
+    <a
+      href={p.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group border border-foreground p-4 flex flex-col gap-3 hover:bg-foreground hover:text-background transition-colors"
+    >
+      <div className="flex items-center gap-3">
+        <img
+          src={`https://github.com/${p.gh}.png?size=120`}
+          alt={`${p.gh} avatar`}
+          loading="lazy"
+          className="w-14 h-14 border border-foreground group-hover:border-background object-cover"
+        />
+        <div className="min-w-0">
+          {typeof index === "number" && (
+            <div className="text-[10px] uppercase tracking-widest opacity-60 tabular-nums">
+              #{String(index + 1).padStart(2, "0")}
+            </div>
+          )}
+          <div className="font-bold truncate">{p.name}</div>
+          <div className="text-xs opacity-70 truncate">@{p.gh}</div>
+        </div>
+      </div>
+      <div className="text-xs opacity-70 truncate border-t border-dashed border-current/40 pt-2">
+        {p.url.replace(/^https?:\/\//, "")} ↗
+      </div>
+    </a>
+  );
+}
+
 function Home() {
-  const count = members.length;
+  const count = ringMembers.length;
 
   return (
-    <main className="min-h-screen px-5 py-10 md:px-10 md:py-16 max-w-3xl mx-auto">
+    <main className="min-h-screen px-5 py-10 md:px-10 md:py-16 max-w-6xl mx-auto">
       {/* header */}
       <header className="flex items-end justify-between border-b border-foreground pb-4">
         <div>
@@ -75,7 +114,7 @@ function Home() {
       </header>
 
       {/* tagline */}
-      <section className="mt-8 space-y-3 text-sm md:text-base leading-relaxed">
+      <section className="mt-8 space-y-3 text-sm md:text-base leading-relaxed max-w-3xl">
         <p>
           a dead-simple webring for the kids of <b>chandigarh university</b> who actually build
           things. personal sites, blogs, weird experiments — string yours into the ring and bounce
@@ -106,44 +145,16 @@ function Home() {
         </div>
       </section>
 
-      {/* how to join */}
+      {/* founders */}
       <section className="mt-12">
-        <h2 className="text-2xl font-bold">// joining</h2>
-        <ol className="mt-3 space-y-2 list-decimal list-inside text-sm md:text-base">
-          <li>
-            fork{" "}
-            <a className="underline decoration-accent" href="https://github.com/">
-              this repo
-            </a>
-          </li>
-          <li>
-            append your entry to <code className="bg-muted px-1">webring.json</code>:
-          </li>
-        </ol>
-        <pre className="mt-3 border border-foreground p-4 text-xs md:text-sm overflow-x-auto bg-muted">
-{`{
-  "name": "your-handle",
-  "gh":   "your-github-username",
-  "url":  "https://your-site.com"
-}`}
-        </pre>
-        <p className="mt-3 text-sm">
-          open a pull request. once merged, the ring auto-deploys.
-        </p>
-      </section>
-
-      {/* snippet */}
-      <section className="mt-12">
-        <h2 className="text-2xl font-bold">// wiring up your site</h2>
-        <p className="mt-2 text-sm">drop this anywhere on your page:</p>
-        <pre className="mt-3 border border-foreground p-4 text-xs md:text-sm overflow-x-auto bg-muted">
-{`<a href="/redirect?from=your-handle&dir=prev">← prev</a>
-<a href="/random">random</a>
-<a href="/redirect?from=your-handle&dir=next">next →</a>`}
-        </pre>
-        <p className="mt-3 text-xs text-muted-foreground">
-          prefix the hrefs with this site's base URL once it's deployed.
-        </p>
+        <h2 className="text-2xl font-bold">
+          // founders <span className="text-muted-foreground">({FOUNDERS.length})</span>
+        </h2>
+        <div className="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+          {FOUNDERS.map((p) => (
+            <PersonCard key={p.gh} p={p} />
+          ))}
+        </div>
       </section>
 
       {/* members */}
@@ -151,66 +162,44 @@ function Home() {
         <h2 className="text-2xl font-bold">
           // the ring <span className="text-muted-foreground">({count})</span>
         </h2>
-        <ul className="mt-4 divide-y divide-foreground border-y border-foreground">
-          {members.map((m, i) => (
-            <li
-              key={m.name}
-              className="flex items-baseline justify-between gap-4 py-3 text-sm md:text-base"
-            >
-              <div className="flex items-baseline gap-3 min-w-0">
-                <span className="text-muted-foreground tabular-nums">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <a
-                  href={m.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-bold truncate hover:text-accent"
-                >
-                  {m.name}
-                </a>
-                <a
-                  href={`https://github.com/${m.gh}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground text-xs truncate hover:underline"
-                >
-                  @{m.gh}
-                </a>
-              </div>
-              <a
-                href={m.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-muted-foreground truncate hover:text-foreground hidden sm:inline"
-              >
-                {m.url.replace(/^https?:\/\//, "")} ↗
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* endpoints */}
-      <section className="mt-12 text-sm">
-        <h2 className="text-2xl font-bold">// endpoints</h2>
-        <ul className="mt-3 space-y-1 font-mono text-xs md:text-sm">
-          <li>
-            <span className="text-accent">GET</span> /redirect?from=&lt;name&gt;&amp;dir=prev|next
-          </li>
-          <li>
-            <span className="text-accent">GET</span> /random
-          </li>
-          <li>
-            <span className="text-accent">GET</span> /members
-          </li>
-        </ul>
+        {count === 0 ? (
+          <p className="mt-4 text-sm text-muted-foreground border border-dashed border-foreground p-6 text-center">
+            empty for now. open a PR and be the first.
+          </p>
+        ) : (
+          <div className="mt-4 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {ringMembers.map((m, i) => (
+              <PersonCard key={m.name} p={m} index={i} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* footer */}
-      <footer className="mt-16 pt-6 border-t border-foreground flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground uppercase tracking-widest">
-        <span>adda © {new Date().getFullYear()}</span>
-        <span>made in sector 17 ★ inspired by threadlocked</span>
+      <footer className="mt-16 pt-6 border-t border-foreground space-y-2 text-xs text-muted-foreground uppercase tracking-widest">
+        <div className="flex flex-wrap gap-x-6 gap-y-1">
+          <span>
+            →{" "}
+            <Link to="/info" className="underline decoration-accent hover:text-foreground">
+              how to join + wire up your site
+            </Link>
+          </span>
+          <span>
+            →{" "}
+            <a
+              href="https://en.wikipedia.org/wiki/Webring"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-accent hover:text-foreground"
+            >
+              what is a webring?
+            </a>
+          </span>
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <span>adda © {new Date().getFullYear()}</span>
+          <span>made in sector 17 ★ inspired by threadlocked</span>
+        </div>
       </footer>
     </main>
   );
