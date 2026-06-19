@@ -3,10 +3,10 @@ import { n as neighbour, r as random, t as members } from "./webring-uyjaPj_e.mj
 import { n as require_jsx_runtime, r as require_react, t as QueryClientProvider } from "../_libs/react+tanstack__react-query.mjs";
 import { S as redirect, a as createRouter, c as createFileRoute, d as useRouter, l as createRootRouteWithContext, n as Scripts, o as Outlet, r as HeadContent, s as lazyRouteComponent, u as Link } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-D2hhHU56.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-CuuVL_qf.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var styles_default = "/assets/styles-DkCZ4aB-.css";
+var styles_default = "/assets/styles-CH2HZaGW.css";
 function reportLovableError(error, context = {}) {
 	if (typeof window === "undefined") return;
 	window.__lovableEvents?.captureException?.(error, {
@@ -192,7 +192,7 @@ var Route$1 = createFileRoute("/info")({
 	}] }),
 	component: lazyRouteComponent($$splitComponentImporter$1, "component")
 });
-var $$splitComponentImporter = () => import("./routes-WBddI8Qi.mjs");
+var $$splitComponentImporter = () => import("./routes-tloD4ye9.mjs");
 var Route = createFileRoute("/")({
 	head: () => ({ meta: [
 		{ title: "adda — a webring for chandigarh university" },

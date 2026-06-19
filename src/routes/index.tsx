@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { members as ringMembers } from "@/lib/webring";
+import { members as allRingMembers } from "@/lib/webring";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,22 +27,41 @@ const FOUNDERS = [
   { name: "radish", gh: "danishistired", url: "https://danishv.me" },
 ];
 
+const FOUNDER_GH_SET = new Set(FOUNDERS.map((f) => f.gh));
+
+function GitHubIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className={className}
+      aria-hidden="true"
+    >
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+    </svg>
+  );
+}
+
 function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   useEffect(() => {
     setMounted(true);
     const saved = localStorage.getItem("theme");
-    if (saved === "dark") document.documentElement.classList.add("dark");
+    if (saved === "dark") {
+      document.documentElement.classList.add("dark");
+      setIsDark(true);
+    } else {
+      setIsDark(document.documentElement.classList.contains("dark"));
+    }
   }, []);
 
   function toggle() {
-    const switchTheme = () => document.documentElement.classList.toggle("dark");
     const apply = () => {
-      switchTheme();
-      localStorage.setItem(
-        "theme",
-        document.documentElement.classList.contains("dark") ? "dark" : "light",
-      );
+      document.documentElement.classList.toggle("dark");
+      const dark = document.documentElement.classList.contains("dark");
+      setIsDark(dark);
+      localStorage.setItem("theme", dark ? "dark" : "light");
     };
     const doc = document as Document & {
       startViewTransition?: (cb: () => void) => unknown;
@@ -51,14 +70,45 @@ function ThemeToggle() {
     else doc.startViewTransition(apply);
   }
 
-  if (!mounted) return <button className="opacity-0">.</button>;
+  if (!mounted) return <button className="theme-toggle opacity-0" aria-hidden />;
   return (
     <button
       onClick={toggle}
-      className="border border-foreground px-3 py-1 text-xs uppercase tracking-widest hover:bg-foreground hover:text-background transition-colors"
+      className="theme-toggle"
       aria-label="toggle theme"
     >
-      [ flip ]
+      {/* sun */}
+      <svg
+        className={`theme-icon ${isDark ? "theme-icon--hidden" : "theme-icon--visible"}`}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <circle cx="12" cy="12" r="5" />
+        <line x1="12" y1="1" x2="12" y2="3" />
+        <line x1="12" y1="21" x2="12" y2="23" />
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+        <line x1="1" y1="12" x2="3" y2="12" />
+        <line x1="21" y1="12" x2="23" y2="12" />
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+      </svg>
+      {/* moon */}
+      <svg
+        className={`theme-icon ${isDark ? "theme-icon--visible" : "theme-icon--hidden"}`}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+      </svg>
     </button>
   );
 }
@@ -67,13 +117,29 @@ type Person = { name: string; gh: string; url: string };
 
 function PersonCard({ p, index }: { p: Person; index?: number }) {
   return (
-    <a
-      href={p.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group border border-foreground p-4 flex flex-col gap-3 hover:bg-foreground hover:text-background transition-colors"
+    <div
+      className="group relative border border-foreground p-4 flex flex-col gap-3 hover:bg-foreground hover:text-background transition-colors overflow-hidden"
     >
-      <div className="flex items-center gap-3">
+      {/* full-card website link (stretched) */}
+      <a
+        href={p.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute inset-0 z-0"
+        aria-label={`Visit ${p.name}'s site`}
+      />
+      {/* clickable github icon */}
+      <a
+        href={`https://github.com/${p.gh}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute top-3 right-3 z-10 w-5 h-5 text-muted-foreground opacity-30 hover:text-accent hover:opacity-80 transition-all duration-200"
+        aria-label={`${p.gh} on GitHub`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <GitHubIcon className="w-full h-full" />
+      </a>
+      <div className="relative z-[1] flex items-center gap-3 pointer-events-none">
         <img
           src={`https://github.com/${p.gh}.png?size=120`}
           alt={`${p.gh} avatar`}
@@ -90,14 +156,15 @@ function PersonCard({ p, index }: { p: Person; index?: number }) {
           <div className="text-xs opacity-70 truncate">@{p.gh}</div>
         </div>
       </div>
-      <div className="text-xs opacity-70 truncate border-t border-dashed border-current/40 pt-2">
+      <div className="relative z-[1] text-xs opacity-70 truncate border-t border-dashed border-current/40 pt-2 pointer-events-none">
         {p.url.replace(/^https?:\/\//, "")} ↗
       </div>
-    </a>
+    </div>
   );
 }
 
 function Home() {
+  const ringMembers = allRingMembers.filter((m) => !FOUNDER_GH_SET.has(m.gh));
   const count = ringMembers.length;
 
   return (
@@ -110,7 +177,18 @@ function Home() {
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mt-1 caret">adda</h1>
         </div>
-        <ThemeToggle />
+        <div className="flex items-center gap-2">
+          <a
+            href="https://github.com/danishistired/chandigarh-linkup"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="header-icon-btn"
+            aria-label="GitHub repository"
+          >
+            <GitHubIcon className="w-4 h-4" />
+          </a>
+          <ThemeToggle />
+        </div>
       </header>
 
       {/* tagline */}
@@ -174,27 +252,7 @@ function Home() {
           </div>
         )}
       </section>
-
-      {/* wire up */}
-      <section className="mt-12">
-        <h2 className="text-2xl font-bold">// wire up your site</h2>
-        <p className="mt-2 text-sm">drop this anywhere on your page and replace <code>your-handle</code> with your exact name from the ring:</p>
-        <pre className="mt-3 border border-foreground p-4 text-xs md:text-sm overflow-x-auto bg-muted">
-{`<a href="/redirect?from=your-handle&dir=prev">← prev</a>
-<a href="/random">random</a>
-<a href="/redirect?from=your-handle&dir=next">next →</a>`}
-        </pre>
-        <p className="mt-3 text-xs text-muted-foreground">
-          prefix the hrefs with this site's base URL once it's deployed. full docs live on{" "}
-          <Link to="/info" className="underline decoration-accent hover:text-foreground">
-            /info
-          </Link>
-          .
-        </p>
-      </section>
-
       {/* footer */}
-
       <footer className="mt-16 pt-6 border-t border-foreground space-y-2 text-xs text-muted-foreground uppercase tracking-widest">
         <div className="flex flex-wrap gap-x-6 gap-y-1">
           <span>
