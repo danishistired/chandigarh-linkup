@@ -1,1 +1,0 @@
-var e={members:[{name:`radish`,gh:`danishistired`,url:`https://danishv.me`}]}.members;export{e as t};
