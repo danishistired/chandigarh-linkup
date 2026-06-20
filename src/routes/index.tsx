@@ -194,7 +194,7 @@ function Home() {
       {/* tagline */}
       <section className="mt-8 space-y-3 text-sm md:text-base leading-relaxed max-w-3xl">
         <p>
-          a dead-simple webring for the kids of <b>chandigarh university</b> who actually build
+          a dead-simple <a className="underline decoration-accent" href="https://en.wikipedia.org/wiki/Webring">webring</a> for the kids of <b>chandigarh university</b> who actually build
           things. personal sites, blogs, weird experiments — string yours into the ring and bounce
           around.
         </p>
@@ -275,7 +275,7 @@ function Home() {
         </div>
         <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
           <span>adda © {new Date().getFullYear()}</span>
-          <span>made in sector 17 ★ inspired by threadlocked</span>
+          <span>made out of boredome and love by danish</span>
         </div>
       </footer>
     </main>

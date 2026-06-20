@@ -37,7 +37,7 @@ function Info() {
         <ol className="mt-3 space-y-2 list-decimal list-inside text-sm md:text-base">
           <li>
             fork{" "}
-            <a className="underline decoration-accent" href="https://github.com/">
+            <a className="underline decoration-accent" href="https://github.com/danishistired/chandigarh-linkup">
               this repo
             </a>
           </li>
