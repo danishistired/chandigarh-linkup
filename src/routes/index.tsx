@@ -273,9 +273,9 @@ function Home() {
             </a>
           </span>
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-          <span>adda © {new Date().getFullYear()}</span>
-          <span>made out of boredome and love by danish</span>
+        <div className="flex items-center pt-2">
+          
+          <span>made out of boredom and love by danish</span>
         </div>
       </footer>
     </main>
